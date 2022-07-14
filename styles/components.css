@@ -1,0 +1,170 @@
+.main-content {
+  padding-top: 100px;
+}
+
+/* Box */
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.box-small {
+  padding: 0.25em;
+}
+
+.box-medium {
+  padding: 1em;
+}
+
+.box-large {
+  padding: 3em;
+}
+
+.box-vertical {
+  flex-direction: column;
+}
+
+/* Banner */
+.banner {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text, black);
+  background: var(--main, white);
+}
+
+.banner-title {
+  padding-bottom: 0px;
+  font-size: 1.6em;
+  font-weight: bold;
+}
+.banner-subtitle {
+  padding-top: 0px;
+  font-size: 0.8em;
+}
+
+/* Button */
+.btn {
+  padding: 0.5em 1em;
+  color: var(--style-text, black);
+  background: var(--main, white);
+  border: 1px solid var(--secondary, lightgray);
+  border-radius: 8px;
+  box-shadow: -1px 2px var(--tertiary, darkgray);
+}
+.btn:hover {
+  /* background: var(--tertiary, darkgray); */
+  cursor: pointer;
+  box-shadow: -2px 2.5px var(--tertiary, darkgray);
+  transform: translate(1px, -1.5px);
+}
+.btn:active {
+  box-shadow: 0px 0px;
+  transform: translate(0px, 0px);
+}
+
+.btn-secondary {
+  color: var(--secondary, black);
+  background-color: var(--bg-color, white);
+}
+
+.btn-plain {
+  border: 1px solid var(--secondary, lightgray);
+  box-shadow: 0px 0px;
+}
+.btn-plain:hover {
+  box-shadow: 0px 0px;
+  transform: translate(0px, 0px);
+}
+
+.btn:disabled {
+  color: gray;
+  background: lightgray;
+  border: 1px solid darkgray;
+  box-shadow: 0px 0px;
+  pointer-events: none;
+}
+
+.btn-small {
+  width: 75px;
+  height: 25px;
+  font-size: 0.6em;
+  font-weight: bold;
+}
+
+/* Card */
+.card {
+  display: flex;
+  flex: 0 1 390px; /* Max width of 390px, doesn't grow only shrinks */
+  min-height: 200px;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--secondary);
+  box-shadow: -3px 5px var(--main);
+  padding: 1em;
+  margin: 1em;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.card-hov:hover {
+  box-shadow: -5px 8px var(--main);
+  transform: translate(3px, -3px);
+}
+
+.card-header {
+  display: flex;
+  width: 60%;
+  align-content: center;
+  justify-content: center;
+  padding: 0px 2em;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid var(--main);
+}
+
+.card-plain {
+  box-shadow: 0px 0px;
+}
+.card-plain:hover {
+  box-shadow: 0px 0px;
+  transform: none;
+}
+
+/* Profile Picture */
+.profile {
+  height: 50px;
+  width: 50px;
+}
+
+.profile-round {
+  border-radius: 100%;
+}
+
+.profile-large {
+  height: 100px;
+  width: 100px;
+}
+
+.profile-xlarge {
+  height: 200px;
+  width: 200px;
+}
+
+.profile-xxlarge {
+  height: 300px;
+  width: 300px;
+}
+
+/* Tag */
+.tag {
+  font-size: 12px;
+  padding: 0em 1em;
+  border: 1px solid var(--main);
+  border-radius: 4px;
+}

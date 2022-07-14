@@ -1,0 +1,26 @@
+:root,
+:root.light {
+  --bg-color: #EFEFEF;
+  --text: #123;
+  --style-text: #123;
+  --main: #1DB954;
+  --secondary: #191414;
+  --tertiary: #191414;
+}
+:root.dark {
+  --bg-color: #191414;
+  --text: #fff;
+  --style-text: #fff;
+  --main: #1DB954;
+  --secondary: #fff;
+  --tertiary: #fff;
+}
+
+body {
+  font-family: 'Nunito', serif;
+  color: var(--text);
+  background-color: var(--bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

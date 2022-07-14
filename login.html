@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login - Bingo Creator</title>
+
+    <!-- Metadata -->
+    <meta charset="UTF-8" />
+    <meta name="author" content="Jeffrey Carr" />
+    <meta name="description" content="Easily create a large number of bingo sheets from a Spotify playlist" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./styles/index.css" />
+    <link rel="stylesheet" href="./styles/components.css" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,500;1,200&display=swap"
+    rel="stylesheet" />
+  </head>
+  <body class="box box-vertical" style="margin: 0px;" onload="loadSettings()">
+    <div class="box box-vertical" style="width: 100%">
+      <div class="banner">
+        <div class="box box-small" style="padding-left: 2em;">
+          <h4><a href="/">Home</a></h4>
+        </div>
+        <div class="box box-vertical">
+          <div class="banner-title">Bingo Creator</div>
+          <div class="banner-subtitle">Jeffrey Carr</div>
+        </div>
+        <div class="box box-small" style="padding-right: 2em;">
+          <h4>Apps</h4>
+        </div>  
+      </div>
+
+      <div class="box box-small" style="background: var(--main);">
+        <button onclick="switchMode()" class="btn btn-small btn-plain" id="modeSwitch"></button>
+      </div>
+    </div>
+
+    <div class="box box-vertical">
+      <h1>Jeff's Bingo Creator</h1>
+
+      <p style="width: 75%;">
+        Welcome to my Bingo Sheet Creator. This is a webapp that allows for the simple 
+        creation of a large number of bingo sheets by using your Spotify playlists.
+      </p>
+      <p style="width: 75%;">
+        This is a simple webapp. I created it to practice my web development skills and try
+        to play around with the Spotify API. This app is just a fun personal project, so it 
+        will always be free and available to anyone who wants it.
+      </p>
+  
+      <div class="box box-large">
+        <button class="btn">Log in with Spotify</button>
+      </div>
+    </div>
+
+    <div style="height: 10000px;"></div>
+    <script>
+      let lightmode = false;
+
+      function loadSettings() {
+        // Load theme
+        let savedMode = localStorage.getItem('mode');
+        if(savedMode != null) {
+          try {
+            lightmode = (savedMode === 'true');
+          } catch(e) {
+            console.log('Error loading saved theme');
+            console.log(e);
+            localStorage.removeItem('mode');
+          }
+        }
+
+        setMode(lightmode);
+      }
+
+      function switchMode() {
+        // Update mode
+        lightmode = !lightmode;
+
+        // Change mode
+        setMode(lightmode);
+
+        // Update cookie
+        localStorage.setItem('mode', lightmode);
+      }
+
+      function setMode(mode) {
+        let classname = mode ? 'light' : 'dark';
+
+        // Change button text
+        let text = `${classname} mode`;
+        document.getElementById('modeSwitch').innerHTML = text;
+
+        // Change html class
+        document.documentElement.className = classname;
+      }
+    </script>
+  </body>
+</html>
