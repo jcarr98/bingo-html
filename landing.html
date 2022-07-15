@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,500;1,200&display=swap"
     rel="stylesheet" />
   </head>
-  <body onload="loadInfo()">
+  <body onload="getUserToken()">
     <p>Code:</p>
     <div class="box">
       <p id="nameSpot"></p>
@@ -28,19 +28,31 @@
     </div>
 
     <script>
-      function loadInfo() {
-        let params = new URLSearchParams(location.search);
+      function getUserToken() {
+        // Get code from callback
+        const params = new URLSearchParams(location.search);
         let code = params.get('code');
-        let p = document.getElementById('nameSpot');
-        p.innerHTML = code;
+        let state = params.get('state');
 
-        fetch(`http://localhost:3001/music/me?userToken=${code}`)
+        fetch(`http://localhost:3001/auth/token?code=${code}&state=${state}`)
         .then(response => {
           return response.text();
         })
         .then(response => {
+          // Get data
           let data = JSON.parse(response);
-          console.log(data);
+
+          // Get expiry time
+          const time = Date.now();
+          let expiryTime = time + parseInt(data.expires_in);
+
+          // Save data on client
+          localStorage.setItem('userToken', data.access_token);
+          localStorage.setItem('tokenExpiry', expiryTime);
+          localStorage.setItem('refreshToken', data.refresh_token);
+
+          // Send user to dashboard
+          window.location.replace('http://localhost:8080/dashboard');
         });
       }
     </script>
