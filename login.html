@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,500;1,200&display=swap"
     rel="stylesheet" />
   </head>
-  <body class="box box-vertical" style="margin: 0px;" onload="loadSettings()">
+  <body onload="loadSettings()">
     <div class="box box-vertical" style="width: 100%">
       <div class="banner">
         <div class="box box-small" style="padding-left: 2em;">
@@ -51,7 +51,11 @@
       </p>
   
       <div class="box box-large">
-        <button class="btn">Log in with Spotify</button>
+        <!-- <button onclick="login()" class="btn">Log in with Spotify</button> -->
+        <a href="http://localhost:3001/auth/spotify">Log in with Spotify</a>
+      </div>
+      <div class="box box-small">
+        <button onclick="test()" class="btn btn-secondary">Test</button>
       </div>
     </div>
 
@@ -95,6 +99,33 @@
 
         // Change html class
         document.documentElement.className = classname;
+      }
+
+      function login() {
+        console.log('Fetching login');
+        fetch('http://localhost:3001/auth/spotify')
+        .then(response => {
+          return response.text();
+        })
+        .then(response => {
+          const data = JSON.parse(response);
+
+          console.log(data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      }
+
+      function test() {
+        fetch('http://localhost:3001/test/getTest')
+        .then(response => {
+          return response.text();
+        })
+        .then(response => {
+          let data = JSON.parse(response);
+          console.log(data);
+        })
       }
     </script>
   </body>

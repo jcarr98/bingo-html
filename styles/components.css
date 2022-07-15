@@ -52,12 +52,19 @@
 /* Button */
 .btn {
   padding: 0.5em 1em;
-  color: var(--style-text, black);
+  color: var(--text, black);
   background: var(--main, white);
   border: 1px solid var(--secondary, lightgray);
   border-radius: 8px;
   box-shadow: -1px 2px var(--tertiary, darkgray);
 }
+
+.btn-secondary {
+  color: var(--text);
+  border: 1px solid var(--main, white);
+  background: var(--bg-color, black);
+}
+
 .btn:hover {
   /* background: var(--tertiary, darkgray); */
   cursor: pointer;
@@ -67,11 +74,6 @@
 .btn:active {
   box-shadow: 0px 0px;
   transform: translate(0px, 0px);
-}
-
-.btn-secondary {
-  color: var(--secondary, black);
-  background-color: var(--bg-color, white);
 }
 
 .btn-plain {

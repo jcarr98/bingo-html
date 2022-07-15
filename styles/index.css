@@ -2,7 +2,6 @@
 :root.light {
   --bg-color: #EFEFEF;
   --text: #123;
-  --style-text: #123;
   --main: #1DB954;
   --secondary: #191414;
   --tertiary: #191414;
@@ -10,10 +9,9 @@
 :root.dark {
   --bg-color: #191414;
   --text: #fff;
-  --style-text: #fff;
   --main: #1DB954;
-  --secondary: #fff;
-  --tertiary: #fff;
+  --secondary: #191414;
+  --tertiary: #191414;
 }
 
 body {
@@ -21,6 +19,13 @@ body {
   color: var(--text);
   background-color: var(--bg-color);
   display: flex;
+  flex-direction: column;
   align-items: center;
+  align-content: center;
   justify-content: center;
+  margin: 0px;
+}
+
+p {
+  width: 75%;
 }
