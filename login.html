@@ -54,86 +54,9 @@
         <!-- <button onclick="login()" class="btn">Log in with Spotify</button> -->
         <button onclick="login()" class="btn">Log in with Spotify</button>
       </div>
-      <div class="box box-small">
-        <button onclick="test()" class="btn btn-secondary">Test</button>
-      </div>
     </div>
-
-    <div style="height: 10000px;"></div>
-    <script>
-      let lightmode = false;
-
-      function loadSettings() {
-        // Load theme
-        let savedMode = localStorage.getItem('mode');
-        if(savedMode != null) {
-          try {
-            lightmode = (savedMode === 'true');
-          } catch(e) {
-            console.log('Error loading saved theme');
-            console.log(e);
-            localStorage.removeItem('mode');
-          }
-        }
-
-        setMode(lightmode);
-      }
-
-      function switchMode() {
-        // Update mode
-        lightmode = !lightmode;
-
-        // Change mode
-        setMode(lightmode);
-
-        // Update cookie
-        localStorage.setItem('mode', lightmode);
-      }
-
-      function setMode(mode) {
-        let classname = mode ? 'light' : 'dark';
-
-        // Change button text
-        let text = `${classname} mode`;
-        document.getElementById('modeSwitch').innerHTML = text;
-
-        // Change html class
-        document.documentElement.className = classname;
-      }
-
-      function login() {
-        console.log('Fetching login');
-        fetch('http://localhost:3001/auth/login')
-        .then(response => {
-          return response.text();
-        })
-        .then(response => {
-          const data = JSON.parse(response);
-          const redirectData = JSON.parse(data.redirectPackage);
-
-          console.log(data);
-
-          window.location.replace(`${data.url}?response_type=${redirectData.response_type}&client_id=${redirectData.client_id}&scope=${redirectData.scope}&redirect_uri=${redirectData.redirect_uri}&state=${redirectData.state}`);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-      }
-
-      function test() {
-        fetch('http://localhost:3001/test/resTest')
-        .then(response => {
-          return response.text();
-        })
-        .then(response => {
-          let data = JSON.parse(response);
-          if(data.status !== 200) {
-            console.log('error');
-          } else {
-            window.location.replace(data.url);
-          }
-        });
-      }
-    </script>
+    
+    <script type="text/javascript" src="./js/shared.js"></script>
+    <script type="text/javascript" src="./js/login.js"></script>
   </body>
 </html>

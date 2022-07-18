@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Bingo Creator</title>
+    <title>Dashboard - Bingo Creator</title>
 
     <!-- Metadata -->
     <meta charset="UTF-8" />
@@ -17,31 +17,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,500;1,200&display=swap"
     rel="stylesheet" />
   </head>
-  <body onload="redirectUser()">
-    <h1>Hello world!</h1>
-    <script>
-      function redirectUser() {
-        // Check if user has token
-        const userToken = localStorage.getItem('userToken');
-        if(userToken === null) {
-          window.location.replace('http://localhost:8080/login');
-          return;
-        }
+  <body onload="loadEverything()" class="box box-vertical">
+    <!-- Banner -->
+    <nav class="box box-vertical" style="width: 100%">
+      <div class="banner">
+        <div class="box box-small" style="padding-left: 2em;">
+          <h4><a href="/">Home</a></h4>
+        </div>
+        <div class="box box-vertical">
+          <div class="banner-title">Bingo Creator</div>
+          <div class="banner-subtitle">Jeffrey Carr</div>
+        </div>
+        <div class="box box-small" style="padding-right: 2em;">
+          <h4>Apps</h4>
+        </div>  
+      </div>
 
-        // If user has token, check for expiry time
-        const expiryTime = parseInt(localStorage.getItem('tokenExpiry'));
-        
-        // If no expiry is present or token is expired, send user to login page
-        // Otherwise, let them continue
-        const currentTime = Date.now();
-        if(expiryTime === null || isNaN(expiryTime) || currentTime > expiryTime) {
-          window.location.replace('http://localhost:8080/login');
-          return;
-        } else {
-          window.location.replace('http://localhost:8080/dashboard');
-          return;
-        }
-      }
-    </script>
+      <div class="box box-small" style="background: var(--main);">
+        <button onclick="switchMode()" class="btn btn-small btn-plain" id="modeSwitch"></button>
+      </div>
+    </nav>
+
+    <!-- Greeting card -->
+    <div class="box box-full">
+      <div class="card card-wide">
+        <h1>Hello, <span id="usernameArea">Unknown</span></h1>
+        <p>Welcome to your dashboard</p>
+
+        <div class="card-footer">
+          <button onclick="logout()" class="btn">Log Out</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Playlist list and songs list area-->
+    <main class="box box-full box-nocenter">
+      <!-- Playlist area -->
+      <div class="box box-vertical" style="width: 40%;">
+        <h2><u>Playlist List</u></h2>
+        <span id="loadingText" style="font-weight: bold;">Loading...</span>
+        <table class="table" id="playlistList" style="visibility: hidden;">
+          <tr class="table-row">
+            <th class="table-cell">Playlist Name</th>
+            <th class="table-cell">Number of Songs</th>
+          </tr>
+        </table>
+      </div>
+      <!-- Tracks area -->
+      <div class="box box-vertical" style="width: 60%;">
+        <h2><u>Playlist Info</u></h2>
+
+        <h3 id="playlistName">No playlist selected</h3>
+        <span id="playlistDescription"></span>
+
+        <div class="box box-full box-vertical" id="trackArea" style="visibility: hidden;">
+          <h3>All tracks:</h3>
+          <div class="box box-full box-vertical" id="trackList"></div>
+        </div>
+      </div>
+    </main>
+
+    <script type="text/javascript" src="./js/shared.js"></script>
+    <script type="text/javascript" src="./js/dashboard.js"></script>
   </body>
 </html>

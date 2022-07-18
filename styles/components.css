@@ -23,8 +23,17 @@
   padding: 3em;
 }
 
+.box-full {
+  width: 100%;
+}
+
 .box-vertical {
   flex-direction: column;
+}
+
+.box-nocenter {
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 /* Banner */
@@ -103,7 +112,8 @@
 /* Card */
 .card {
   display: flex;
-  flex: 0 1 390px; /* Max width of 390px, doesn't grow only shrinks */
+  /* flex: 0 1 390px; Max width of 390px, doesn't grow only shrinks */
+  max-width: 390px;
   min-height: 200px;
   flex-direction: column;
   align-items: center;
@@ -113,6 +123,16 @@
   margin: 1em;
   text-align: center;
   border-radius: 8px;
+}
+
+.card-wide {
+  max-width: none;
+  width: 50%;
+}
+
+.card-xwide {
+  max-width: none;
+  width: 75%;
 }
 
 .card-hov:hover {
@@ -128,6 +148,12 @@
   padding: 0px 2em;
   margin-bottom: 0.5em;
   border-bottom: 1px solid var(--main);
+}
+
+.card-footer {
+  width: 90%;
+  padding-top: 1em;
+  /* border-top: 1px solid var(--secondary); */
 }
 
 .card-plain {
@@ -169,4 +195,22 @@
   padding: 0em 1em;
   border: 1px solid var(--main);
   border-radius: 4px;
+}
+
+/* Table */
+.table {
+  border: 1px solid var(--secondary);
+  border-collapse: collapse;
+}
+
+.table th,td {
+  border-bottom: 1px solid var(--secondary);
+  padding: 0.5em 1em;
+}
+
+.table-clickable {
+  cursor: pointer;
+}
+.table-clickable:hover {
+  background: darkgray;
 }
