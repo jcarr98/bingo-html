@@ -17,15 +17,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,500;1,200&display=swap"
     rel="stylesheet" />
   </head>
-  <body onload="getUserToken()">
-    <p>Code:</p>
-    <div class="box">
-      <p id="nameSpot"></p>
-    </div>
-
-    <div class="box">
-      <button onclick="window.location.replace('/');" class="btn">Back to home</button>
-    </div>
+  <body onload="getUserToken()" class="box box-vertical">
+    <p>Logging you in...</p>
 
     <script>
       function getUserToken() {

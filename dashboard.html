@@ -21,6 +21,7 @@
     <h1>Dashboard</h1>
     <button onclick="loadUserInfo()" class="btn">Load User Info</button>
     <button onclick="window.location.href = 'http://localhost:8080'" class="btn">Back to home</button>
+    <button onclick="localStorage.removeItem('userToken'); window.location.href = '/';" class="btn">Log out</button>
 
     <script>
       function loadUserInfo() {
