@@ -4,9 +4,10 @@ let user = {
   'id': null
 };
 
-let playlists = [], tracks = [], sampleButtons = [];
+let playlists = [], tracks = [];
 let currentButton = -1, buttonCount = 0;
 let a;
+let modalShowing = false;
 
 function loadEverything() {
   loadSettings();
@@ -35,7 +36,6 @@ function validateUser() {
 }
 
 function loadUserInfo() {
-  console.log('loading info');
   // Get user token
   let userToken = localStorage.getItem('userToken');
 
@@ -90,17 +90,21 @@ function loadPlaylists() {
       playlists.push(playlist);
     }
 
-    // Create element for each playlist
-    let loadingText = document.getElementById('loadingText');
+    // Show table
     let table = document.getElementById('playlistList');
     table.style.visibility = 'visible';
+
+    // Remove loading text
+    let loadingText = document.getElementById('loadingText');
     loadingText.remove();
+
+    // Create element for each playlist
     for(let i = 0; i < playlists.length; i++) {
       let playlist = playlists[i];
 
       let tableRow = document.createElement('tr');
       tableRow.classList.add('table-clickable');
-      tableRow.onclick = function() { loadTracks(i) };
+      tableRow.onclick = function() { loadTracks(i); };
 
       let playlistName = document.createElement('td');
       playlistName.innerHTML = playlist.name;
@@ -113,16 +117,16 @@ function loadPlaylists() {
 
       table.appendChild(tableRow);
     }
-
-    console.log('Done loading');
   });
 }
 
+/* Tracks code */
 function loadTracks(index) {
   const accessToken = localStorage.getItem('userToken');
   let playlistNameArea = document.getElementById('playlistName');
   let playlistDescArea = document.getElementById('playlistDescription');
   let trackArea = document.getElementById('trackArea');
+  let createButton = document.getElementById('createButton');
 
   // Set loading text
   playlistDescArea.innerHTML = 'Loading...';
@@ -141,6 +145,9 @@ function loadTracks(index) {
 
     // Set track area to visible
     trackArea.style.visibility = 'visible';
+
+    // Enable creation button
+    createButton.disabled = false;
 
     // Clear current track list
     tracks = [];
@@ -184,7 +191,6 @@ function loadTracks(index) {
     }
   })
 }
-
 function createCard(track) {
   // Create card div
   let card = document.createElement('div');
@@ -197,6 +203,7 @@ function createCard(track) {
   infoContainer.classList.add('box');
   infoContainer.classList.add('box-full');
   infoContainer.style.justifyContent = 'flex-start';
+  infoContainer.style.flexWrap = 'nowrap';
 
   // Album container
   let albumContainer = document.createElement('div');
@@ -266,7 +273,6 @@ function createCard(track) {
   // Return completed card
   return card;
 }
-
 function artistList(artists) {
   let str = 'By: ';
 
@@ -280,7 +286,6 @@ function artistList(artists) {
 
   return str;
 }
-
 function toggleSample(index, url) {
   // Check if audio is already playing
   if(currentButton >= 0) {
@@ -315,6 +320,20 @@ function toggleSample(index, url) {
     newBtn.innerHTML = 'Pause sample';
   }
 
+}
+
+function toggleModal() {
+  // Update variable
+  modalShowing = !modalShowing;
+  console.log(`Modal showing: ${modalShowing}`);
+
+  // Pick display
+  let display = modalShowing ? 'block' : 'none';
+  console.log(`Setting display to ${display}`);
+
+  // Get modal item
+  let modal = document.getElementById('generatorSettings');
+  modal.style.display = display;
 }
 
 function logout() {

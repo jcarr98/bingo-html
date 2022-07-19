@@ -16,18 +16,3 @@ function login() {
     console.log(err);
   });
 }
-
-function test() {
-  fetch('http://localhost:3001/test/resTest')
-  .then(response => {
-    return response.text();
-  })
-  .then(response => {
-    let data = JSON.parse(response);
-    if(data.status !== 200) {
-      console.log('error');
-    } else {
-      window.location.replace(data.url);
-    }
-  });
-}

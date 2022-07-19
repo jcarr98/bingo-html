@@ -214,3 +214,18 @@
 .table-clickable:hover {
   background: darkgray;
 }
+
+.modal {
+  display: none;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  z-index: 1;
+  background: darkgray;
+  opacity: 50%;
+}
+
+.modal-content {
+  opacity: 1;
+}

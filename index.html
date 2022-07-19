@@ -19,7 +19,7 @@
   </head>
   <body onload="loadEverything()" class="box box-vertical">
     <!-- Banner -->
-    <nav class="box box-vertical" style="width: 100%">
+    <nav class="box box-full box-vertical">
       <div class="banner">
         <div class="box box-small" style="padding-left: 2em;">
           <h4><a href="/">Home</a></h4>
@@ -41,7 +41,7 @@
     <!-- Greeting card -->
     <div class="box box-full">
       <div class="card card-wide">
-        <h1>Hello, <span id="usernameArea">Unknown</span></h1>
+        <h1>Hello, <span id="usernameArea">You</span></h1>
         <p>Welcome to your dashboard</p>
 
         <div class="card-footer">
@@ -53,7 +53,7 @@
     <!-- Playlist list and songs list area-->
     <main class="box box-full box-nocenter">
       <!-- Playlist area -->
-      <div class="box box-vertical" style="width: 40%;">
+      <div class="box box-vertical" style="width: 33%; padding-left: 2em;">
         <h2><u>Playlist List</u></h2>
         <span id="loadingText" style="font-weight: bold;">Loading...</span>
         <table class="table" id="playlistList" style="visibility: hidden;">
@@ -67,15 +67,32 @@
       <div class="box box-vertical" style="width: 60%;">
         <h2><u>Playlist Info</u></h2>
 
-        <h3 id="playlistName">No playlist selected</h3>
-        <span id="playlistDescription"></span>
+        <div class="box box-vertical">
+          <div class="box">
+            <h2 id="playlistName">No playlist selected</h2>
+          </div>
+          <div class="box">
+            <span id="playlistDescription"></span>
+          </div>
+          <div class="box box-medium">
+            <button onclick="toggleModal()" class="btn" id="createButton" disabled>Create Bingo Sheets</button>
+          </div>
+        </div>
 
         <div class="box box-full box-vertical" id="trackArea" style="visibility: hidden;">
-          <h3>All tracks:</h3>
           <div class="box box-full box-vertical" id="trackList"></div>
         </div>
       </div>
     </main>
+
+    <div class="modal" id="generatorSettings">
+      <div class="modal-content">
+        <div class="card card-wide">
+          <h1>Modal</h1>
+          <button class="btn" onclick="toggleModal()">Close</button>
+        </div>
+      </div>
+    </div>
 
     <script type="text/javascript" src="./js/shared.js"></script>
     <script type="text/javascript" src="./js/dashboard.js"></script>
