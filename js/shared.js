@@ -1,4 +1,5 @@
 let lightmode = false;
+let user;
 
 function loadSettings() {
   // Load theme
@@ -36,4 +37,28 @@ function setMode(mode) {
 
   // Change html class
   document.documentElement.className = classname;
+}
+
+function validateUser() {
+  // Get (allegedly) saved token
+  let userToken = localStorage.getItem('userToken');
+  user = new User(userToken);
+
+  // Check if user has token
+  if(user.token === null) {
+    window.location.replace('/login');
+    return;
+  }
+
+  // If user has token, check for expiry time
+  const expiryTime = parseInt(localStorage.getItem('tokenExpiry'));
+  
+  // If no expiry is present or token is expired, send user to login page
+  // Otherwise, let them continue
+  const currentTime = Date.now();
+  if(expiryTime === null || isNaN(expiryTime) || currentTime > expiryTime) {
+    window.location.replace('/login');
+  } else {
+    user.expiry = expiryTime;
+  }
 }

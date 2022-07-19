@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Login - Bingo Creator</title>
+    <title>Create - Bingo Creator</title>
 
     <!-- Metadata -->
     <meta charset="UTF-8" />
@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,500;1,200&display=swap"
     rel="stylesheet" />
   </head>
-  <body onload="loadSettings()">
+  <body onload="loadSettings(); validateUser(); loadTracks();">
     <!-- Banner -->
     <div class="box box-full box-vertical">
       <div class="banner">
@@ -38,34 +38,32 @@
       </div>
     </div>
 
-    <div class="box box-vertical">
-      <h1>Jeff's Bingo Creator</h1>
+    <h1>Create Bingo Sheets</h1>
 
+    <!-- Description of services -->
+    <div class="box">
       <p>
-        Welcome to my Bingo Sheet Creator. This is a webapp that allows for the simple 
-        creation of a large number of bingo sheets by using your Spotify playlists.
+        Here you can edit the sheet name, song names, add a free space image, a company logo,
+        and a company name.
       </p>
       <p>
-        This is a simple webapp. I created it to practice my web development skills and try
-        to play around with the Spotify API. This app is just a fun personal project, so it 
-        will always be free and available to anyone who wants it.
+        Total songs: <span id="totalTracks" style="font-weight: bold;">?</span>
       </p>
       <p>
-        Unfortunately, due to Spotify's <a href="https://developer.spotify.com/policy#iii-some-prohibited-applications" target="_blank">developer policy</a> 
-        (specifically section 3, item 2), I cannot take this app out of development mode. 
-        This means that for you to access this app, you need to be whitelisted by me. If you want access 
-        to this app, either to use to make bingo sheets or just to check out my work, please 
-        <a href="mailto:jeffrey.carr98@gmail.com">Email me</a> at jeffrey.carr98@gmail.com with your full 
-        name and email address used at Spotify.
-      </p>
-  
-      <div class="box box-large">
-        <!-- <button onclick="login()" class="btn">Log in with Spotify</button> -->
-        <button onclick="login()" class="btn">Log in with Spotify</button>
-      </div>
+        You can generate <span id="possibleSheets" style="font-weight: bold;">?</span> unique 
+        bingo boards with this many songs!</p>
     </div>
     
+    <!-- All tracks-->
+    <h2>Tracks:</h2>
+    <ol id="trackList">
+      Loading tracks...
+    </ol>
+
+    <button onclick="window.location.href = '/';" class="btn">Back to main</button>
+    
     <script type="text/javascript" src="./js/shared.js"></script>
-    <script type="text/javascript" src="./js/login.js"></script>
+    <script type="text/javascript" src="./classes/datastores.js"></script>
+    <script type="text/javascript" src="./js/create.js"></script>
   </body>
 </html>

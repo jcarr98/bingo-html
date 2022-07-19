@@ -26,6 +26,10 @@ body {
   margin: 0px;
 }
 
+p {
+  width: 75%;
+}
+
 a {
   color: var(--main);
 }

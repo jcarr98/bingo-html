@@ -1,58 +1,34 @@
-let user = {
-  'name': null,
-  'href': null,
-  'id': null
-};
+// Using { Playlist, Track, User } from ../classes/datastores.js
 
-let playlists = [], tracks = [];
+// List of all current playlists
+let playlists = [];
+// Index of current playlist and list of all tracks of currently selected playlist
+let playlist = -1, tracks = [];
+// Count of all sample buttons for this playlist and currently selected sample button
 let currentButton = -1, buttonCount = 0;
 let a;
-let modalShowing = false;
 
 function loadEverything() {
+  // Load saved prefernce settings
   loadSettings();
+  // Validate user token
   validateUser();
+  // Load user information from Spotify
   loadUserInfo();
+  // Load all user playlists from Spotify
   loadPlaylists();
 }
 
-function validateUser() {
-  // Check if user has token
-  const userToken = localStorage.getItem('userToken');
-  if(userToken === null) {
-    window.location.replace('/login');
-    return;
-  }
-
-  // If user has token, check for expiry time
-  const expiryTime = parseInt(localStorage.getItem('tokenExpiry'));
-  
-  // If no expiry is present or token is expired, send user to login page
-  // Otherwise, let them continue
-  const currentTime = Date.now();
-  if(expiryTime === null || isNaN(expiryTime) || currentTime > expiryTime) {
-    window.location.replace('/login');
-  }
-}
-
 function loadUserInfo() {
-  // Get user token
-  let userToken = localStorage.getItem('userToken');
-
-  // Check it exists
-  if(userToken === null) {
-    window.location.href = '/login';
-    return;
-  }
-
   // Fetch data
-  fetch(`http://localhost:3001/music/me?userToken=${userToken}`)
+  fetch(`http://localhost:3001/music/me?userToken=${user.token}`)
   .then(response => {
     return response.text();
   })
   .then(response => {
     let data = JSON.parse(response);
 
+    // `user` is a global variable loaded from ./shared.js
     user.name = data.display_name;
     user.href = data.href;
     user.id = data.id;
@@ -64,9 +40,7 @@ function loadUserInfo() {
 }
 
 function loadPlaylists() {
-  const accessToken = localStorage.getItem('userToken');
-
-  fetch(`http://localhost:3001/music/playlists?userToken=${accessToken}`)
+  fetch(`http://localhost:3001/music/playlists?userToken=${user.token}`)
   .then(response => {
     return response.text();
   })
@@ -80,12 +54,12 @@ function loadPlaylists() {
         continue;
       }
 
-      let playlist = {
-        id: element.id,
-        name: element.name,
-        description: element.description,
-        numTracks: element.tracks.total
-      };
+      let playlist = new Playlist(
+        element.id,
+        element.name,
+        element.description,
+        element.tracks.total
+      );
 
       playlists.push(playlist);
     }
@@ -110,7 +84,7 @@ function loadPlaylists() {
       playlistName.innerHTML = playlist.name;
 
       let numTracks = document.createElement('td');
-      numTracks.innerHTML = playlist.numTracks;
+      numTracks.innerHTML = playlist.number_tracks;
 
       tableRow.appendChild(playlistName);
       tableRow.appendChild(numTracks);
@@ -122,7 +96,10 @@ function loadPlaylists() {
 
 /* Tracks code */
 function loadTracks(index) {
-  const accessToken = localStorage.getItem('userToken');
+  // Update currently selected playlist
+  playlist = index;
+
+  // Get all necessary html elements
   let playlistNameArea = document.getElementById('playlistName');
   let playlistDescArea = document.getElementById('playlistDescription');
   let trackArea = document.getElementById('trackArea');
@@ -132,7 +109,7 @@ function loadTracks(index) {
   playlistDescArea.innerHTML = 'Loading...';
 
   // Get all tracks from the specified playlist
-  fetch(`http://localhost:3001/music/tracks?userToken=${accessToken}&playlistId=${playlists[index].id}`)
+  fetch(`http://localhost:3001/music/tracks?userToken=${user.token}&playlistId=${playlists[index].id}`)
   .then(response => {
     return response.text();
   })
@@ -155,21 +132,15 @@ function loadTracks(index) {
     // Save each track with wanted data
     for(const element of data) {
       const el = element.track;
-      let artists = [];
-
-      // Separate out only artist names
-      for(const artist of el.artists) {
-        artists.push(artist.name);
-      }
 
       // Create track object
-      let track = {
-        name: el.name,
-        artists: artists,
-        album: el.album.name,
-        album_art: el.album.images[2].url,
-        preview: el.preview_url
-      }
+      let track = new Track(
+        el.name,
+        el.artists,
+        el.album.name,
+        el.album.images[2].url,
+        el.preview_url
+      );
 
       // Save track object to master list
       tracks.push(track);
@@ -231,7 +202,7 @@ function createCard(track) {
 
   // Artists
   let artists = document.createElement('div');
-  artists.innerHTML = artistList(track.artists);
+  artists.innerHTML = track.artist_string();
 
   // Add track info to track container
   trackContainer.appendChild(title);
@@ -273,19 +244,6 @@ function createCard(track) {
   // Return completed card
   return card;
 }
-function artistList(artists) {
-  let str = 'By: ';
-
-  for(let i = 0; i < artists.length; i++) {
-    str = str + artists[i];
-
-    if(i < artists.length-1) {
-      str = str + ', ';
-    }
-  }
-
-  return str;
-}
 function toggleSample(index, url) {
   // Check if audio is already playing
   if(currentButton >= 0) {
@@ -319,21 +277,12 @@ function toggleSample(index, url) {
     currentButton = index;
     newBtn.innerHTML = 'Pause sample';
   }
-
 }
 
-function toggleModal() {
-  // Update variable
-  modalShowing = !modalShowing;
-  console.log(`Modal showing: ${modalShowing}`);
-
-  // Pick display
-  let display = modalShowing ? 'block' : 'none';
-  console.log(`Setting display to ${display}`);
-
-  // Get modal item
-  let modal = document.getElementById('generatorSettings');
-  modal.style.display = display;
+function createSheets() {
+  // Send user to create page with currently selected playlist
+  const currentPlaylist = playlists[playlist];
+  window.location.href = `/create?playlist=${currentPlaylist.id}`;
 }
 
 function logout() {
