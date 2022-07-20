@@ -6,7 +6,8 @@ let playlists = [];
 let playlist = -1, tracks = [];
 // Count of all sample buttons for this playlist and currently selected sample button
 let currentButton = -1, buttonCount = 0;
-let a;
+// Sample audio object
+let sampleAudio;
 
 function loadEverything() {
   // Load saved prefernce settings
@@ -248,7 +249,7 @@ function toggleSample(index, url) {
   // Check if audio is already playing
   if(currentButton >= 0) {
     // Pause audio
-    a.pause();
+    sampleAudio.pause();
 
     // Change current button's text
     let btn = document.getElementById(`${currentButton}`);
@@ -263,14 +264,14 @@ function toggleSample(index, url) {
     return;
   }
 
-  a = new Audio(url);
+  sampleAudio = new Audio(url);
 
-  if(a.error) {
+  if(sampleAudio.error) {
     console.log(audio.error);
     alert('Error playing audio');
   } else {
     // Play audio
-    a.play();
+    sampleAudio.play();
 
     // Change button text
     let newBtn = document.getElementById(`${index}`);
@@ -282,7 +283,12 @@ function toggleSample(index, url) {
 function createSheets() {
   // Send user to create page with currently selected playlist
   const currentPlaylist = playlists[playlist];
-  window.location.href = `/create?playlist=${currentPlaylist.id}`;
+
+  let params = new URLSearchParams();
+  params.append('name', currentPlaylist.name);
+  params.append('id', currentPlaylist.id);
+
+  window.location.href = `/create?${params.toString()}`;
 }
 
 function logout() {

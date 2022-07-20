@@ -51,16 +51,49 @@
       </p>
       <p>
         You can generate <span id="possibleSheets" style="font-weight: bold;">?</span> unique 
-        bingo boards with this many songs!</p>
+        bingo boards with this many songs!
+      </p>
     </div>
+
+    <!-- Bingo sheet properties -->
+    <h2>Sheet Info</h2>
+    <table>
+      <tr>
+        <td class="table-clear-label">Sheet Name:</td>
+        <td class="table-clear-input"><input type="text" name="playlistName" class="input input-long" id="playlistName" /></td>
+      </tr>
+      <tr>
+        <td class="table-clear-label">Number of Sheets:</td>
+        <td class="table-clear-input"><input type="number" min="1" value="1" class="input input-long" name="numSheets" id="numSheets" /></td>
+      </tr>
+      <tr>
+        <td class="table-clear-label">Free Space Logo:</td>
+        <td class="table-clear-input">
+          <div class="box box-vertical box-nocenter">
+            <input type="file" name="freespace" id="freespace" accept="image/png, image/jpeg, image/jpg, image/heic" disabled />
+            <div>
+              <span style="font-size: 0.7em; text-decoration: line-through;">Accepts PNG, JPEG, and HEIC</span>
+              <span style="font-size: 0.7em;">Not implemented</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
     
     <!-- All tracks-->
-    <h2>Tracks:</h2>
-    <ol id="trackList">
-      Loading tracks...
-    </ol>
+    <h2>Tracks</h2>
+    <div class="box box-full box-vertical" id="trackList">
+      Loading...
+    </div>
 
-    <button onclick="window.location.href = '/';" class="btn">Back to main</button>
+    <div class="box box-large">
+      <div class="box box-small">
+        <button onclick="generate();" class="btn">Create Sheets</button>
+      </div>
+      <div class="box box-small">
+        <button onclick="window.location.href = '/';" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
     
     <script type="text/javascript" src="./js/shared.js"></script>
     <script type="text/javascript" src="./classes/datastores.js"></script>
