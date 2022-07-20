@@ -51,7 +51,13 @@ function validateUser() {
   }
 
   // If user has token, check for expiry time
+  // const expiryTime = Number(localStorage.getItem('tokenExpiry'));
   const expiryTime = parseInt(localStorage.getItem('tokenExpiry'));
+
+  // No need to check expiry time if < 0; demo account
+  if(expiryTime < 0) {
+    return;
+  }
   
   // If no expiry is present or token is expired, send user to login page
   // Otherwise, let them continue

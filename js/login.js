@@ -14,3 +14,13 @@ function login() {
     console.log(err);
   });
 }
+
+function demoLogin() {
+  // Just store user token in localhost
+  localStorage.setItem('userToken', 'demo');
+  localStorage.setItem('tokenExpiry', -1);
+  localStorage.setItem('refreshToken', 'demo');
+  
+  // Load dashboard
+  window.location.href = `http://localhost:8080/`;
+}
