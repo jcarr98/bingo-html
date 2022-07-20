@@ -98,13 +98,150 @@ function generate() {
     }
   }
 
-  // Convert track name array to JSON string
-  let jsonTracks = JSON.stringify(trackNames);
+  // Get number of sheets
+  const numSheets = parseInt(document.getElementById('numSheets').value);
 
-  // Create search parameters and send to generator
-  let params = new URLSearchParams();
-  params.append('title', title);
-  params.append('tracks', jsonTracks);
+  // Create tables
+  const tables = generateTables(trackNames, numSheets);
 
-  window.location.href = `/generate?${params.toString()}`;
+  // Confirm sheet creation was successful
+  if(tables.length < numSheets) {
+    console.log('Error generating sheets, not enough created');
+    return;
+  }
+
+  createPDF(title, tables);
+}
+
+/* This is bad, but does the job */
+// Shuffle array of songs and compare to already shuffled songs.
+// If the array is unique, save it; if not, skip
+const generateTables = (arr, k) => {
+  let results = [];
+
+  // Returns shuffled array
+  const shuffle = (array) => {
+    let shuffled = array.slice();
+    let currentIndex = shuffled.length, randomIndex;
+    while(currentIndex !== 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      [shuffled[currentIndex], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[currentIndex]];
+    }
+
+    return shuffled;
+  };
+
+  // Compares array to existing arrays
+  const compare = (newArray, allArrays) => {
+    let nJson = JSON.stringify(newArray);
+
+    for(let i = 0; i < allArrays.length; i++) {
+      let aJson = JSON.stringify(allArrays[i]);
+
+      if(nJson === aJson) {
+        console.log('New board already exists');
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const splitArray = (array) => {
+    let table = [];
+    let middleRow = [];
+
+    // Split current table into 5 rows
+    table.push(array.slice(0, 5));
+    table.push(array.slice(5, 10));
+
+    // In third row we need 'Free Space'
+    middleRow = array.slice(10, 12);
+    middleRow.push('');  // Leave free space blank - gets filled in by PDF generator
+    middleRow.push(array[13], array[14]);
+    table.push(middleRow);
+
+    table.push(array.slice(15, 20));
+    table.push(array.slice(20));
+
+    return table;
+  }
+
+  let nArr = arr;
+  let i = 0;
+  let repeats = 0;
+  while(i < k && repeats < 50) {
+    nArr = shuffle(nArr);
+    // Only take first 25 songs
+    let shuffledArr = splitArray(nArr.slice(0, 25));
+    // Check if this table is already saved
+    if(compare(shuffledArr, results)) {
+      // Create table using first 25 songs
+      // let table = splitArray(shuffledArr);
+      results.push(shuffledArr);
+      i++;
+    } else {
+      console.log('Repeat sheet generated, skipping');
+      repeats++;
+    }
+  }
+
+  if(repeats >= 50) {
+    console.log('Error generating sheets, too many repeats');
+    return [];
+  }
+
+  return results;
+}
+
+function createPDF(title, tables) {
+  const pdf = new jspdf.jsPDF();
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+
+    // For each bingo sheet, create a new page in the pdf
+    for(let i = 0; i < tables.length; i++) {
+      pdf.setFontSize(32);
+      pdf.text(title, pageWidth/2, 35, 'center');
+      pdf.autoTable({
+        startY: 60,
+        headStyles: {
+          lineWidth: 0,
+          minCellHeight: 5,
+          textColor: 'black',
+          fontSize: 22,
+          fontStyle: "bold"
+        },
+        styles: {
+          cellWidth: pageWidth/5-5,
+          minCellHeight: pageWidth/5-5,
+          halign: 'center',
+          valign: 'middle',
+          overflow: 'linebreak',
+          fillColor: false,
+          lineWidth: 0.5
+        },
+        alternateRowStyles: {
+          fillColor: false
+        },
+        head: [['B', 'I', 'N', 'G', 'O']],
+        body: tables[i],
+        didDrawCell: function(data) {
+          if(data.column.index === 2 && data.row.index === 2) {
+            let textPos = data.cell.getTextPos();
+            pdf.setFont(undefined, 'bold');
+            pdf.text(textPos.x-9, textPos.y+1, 'Free Space');
+            pdf.setFont(undefined, 'normal');
+          }
+        }
+      });
+      
+      if(i < tables.length-1) {
+        pdf.addPage();
+      }
+    }
+
+    pdf.save('bingosheets.pdf');
 }
