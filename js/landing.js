@@ -1,10 +1,10 @@
-function getUserToken() {
+function getaccessToken() {
   // Get code from callback
   const params = new URLSearchParams(location.search);
   let code = params.get('code');
   let state = params.get('state');
 
-  fetch(`http://localhost:3001/auth/token?code=${code}&state=${state}`)
+  fetch(`https://candle-cobra.herokuapp.com/auth/token?code=${code}&state=${state}`)
   .then(response => {
     return response.text();
   })
@@ -18,9 +18,12 @@ function getUserToken() {
     const expiryTime = time + expiresIn;
 
     // Save data on client
-    localStorage.setItem('userToken', data.access_token);
+    localStorage.setItem('accessToken', data.access_token);
     localStorage.setItem('tokenExpiry', expiryTime);
     localStorage.setItem('refreshToken', data.refresh_token);
+
+    // Create new user
+    createUser(data.access_token, expiryTime, data.refresh_token);
 
     // Send user to dashboard
     window.location.replace('/');

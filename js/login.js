@@ -1,6 +1,6 @@
 function login() {
   console.log('Fetching login');
-  fetch('http://localhost:3001/auth/login')
+  fetch('https://candle-cobra.herokuapp.com/auth/login')
   .then(response => {
     return response.text();
   })
@@ -17,10 +17,10 @@ function login() {
 
 function demoLogin() {
   // Just store user token in localhost
-  localStorage.setItem('userToken', 'demo');
+  localStorage.setItem('accessToken', 'demo');
   localStorage.setItem('tokenExpiry', -1);
   localStorage.setItem('refreshToken', 'demo');
   
   // Load dashboard
-  window.location.href = `http://localhost:8080/`;
+  window.location.href = `/`;
 }

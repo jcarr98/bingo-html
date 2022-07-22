@@ -14,29 +14,36 @@
     <link rel="stylesheet" href="./styles/components.css" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,500;1,200&display=swap"
-    rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,500;1,200&display=swap" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/c7ff23f1ca.js" crossorigin="anonymous"></script>
   </head>
   <body onload="loadSettings()">
     <!-- Banner -->
-    <div class="box box-full box-vertical">
+    <nav class="box box-full box-vertical">
       <div class="banner">
         <div class="box box-small" style="padding-left: 2em;">
-          <h4><a href="/">Home</a></h4>
+          <h4>
+            <a href="/"><i class="fa-solid fa-house fa-xl"></i></a>
+          </h4>
         </div>
         <div class="box box-vertical">
           <div class="banner-title">Bingo Creator</div>
           <div class="banner-subtitle">Jeffrey Carr</div>
         </div>
         <div class="box box-small" style="padding-right: 2em;">
-          <h4>Apps</h4>
+          <a href="#">
+            <div class="box box-vertical">
+                <i class="fa-solid fa-cubes-stacked"></i>
+                <span>Apps</span>
+            </div>
+          </a>
         </div>  
       </div>
 
       <div class="box box-small" style="background: var(--main);">
         <button onclick="switchMode()" class="btn btn-small btn-plain" id="modeSwitch"></button>
       </div>
-    </div>
+    </nav>
 
     <div class="box box-vertical">
       <h1>Jeff's Bingo Creator</h1>

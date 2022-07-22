@@ -9,90 +9,69 @@ let currentButton = -1, buttonCount = 0;
 // Sample audio object
 let sampleAudio;
 
-function loadEverything() {
+function load() {
   // Load saved prefernce settings
   loadSettings();
   // Validate user token
-  validateUser();
-  // Load user information from Spotify
-  loadUserInfo();
-  // Load all user playlists from Spotify
-  loadPlaylists();
+  validateUser().then(valid => {
+    if(valid) {
+      loadUserInfo();
+      loadPlaylists();
+    } else {
+      window.location.replace('/login');
+    }
+  });
 }
 
 function loadUserInfo() {
-  // Fetch data
-  fetch(`http://localhost:3001/music/me?userToken=${user.token}`)
-  .then(response => {
-    return response.text();
-  })
-  .then(response => {
-    let data = JSON.parse(response);
-
-    // `user` is a global variable loaded from ./shared.js
-    user.name = data.display_name;
-    user.href = data.href;
-    user.id = data.id;
-
-    // Set user name
-    let usernameArea = document.getElementById('usernameArea');
-    usernameArea.innerHTML = user.name;
+  getUser().then(result => {
+    if(!result.success) {
+      window.location.replace('/login');
+      return;
+    } else {
+      let usernameArea = document.getElementById('usernameArea');
+      usernameArea.innerHTML = user.name;
+    }
   });
 }
 
 function loadPlaylists() {
-  fetch(`http://localhost:3001/music/playlists?userToken=${user.token}`)
-  .then(response => {
-    return response.text();
-  })
-  .then(response => {
-    let data = JSON.parse(response);
-
-    // Load each playlist
-    for(const element of data) {
-      // Only add playlist that have >= 25 songs
-      if(element.tracks.total < 25) {
-        continue;
+    getPlaylists().then(result => {
+      if(!result.success) {
+        window.location.replace('/login');
+        return;
       }
 
-      let playlist = new Playlist(
-        element.id,
-        element.name,
-        element.description,
-        element.tracks.total
-      );
+      playlists = result.playlists;
 
-      playlists.push(playlist);
-    }
+      // Show table
+      let table = document.getElementById('playlistList');
+      table.style.visibility = 'visible';
 
-    // Show table
-    let table = document.getElementById('playlistList');
-    table.style.visibility = 'visible';
+      // Remove loading text
+      let loadingText = document.getElementById('loadingText');
+      loadingText.remove();
 
-    // Remove loading text
-    let loadingText = document.getElementById('loadingText');
-    loadingText.remove();
+      // Create element for each playlist
+      for(let i = 0; i < playlists.length; i++) {
+        let playlist = playlists[i];
 
-    // Create element for each playlist
-    for(let i = 0; i < playlists.length; i++) {
-      let playlist = playlists[i];
+        let tableRow = document.createElement('tr');
+        tableRow.classList.add('table-clickable');
+        tableRow.onclick = function() { loadTracks(i); };
 
-      let tableRow = document.createElement('tr');
-      tableRow.classList.add('table-clickable');
-      tableRow.onclick = function() { loadTracks(i); };
+        let playlistName = document.createElement('td');
+        playlistName.innerHTML = playlist.name;
 
-      let playlistName = document.createElement('td');
-      playlistName.innerHTML = playlist.name;
+        let numTracks = document.createElement('td');
+        numTracks.innerHTML = playlist.number_tracks;
 
-      let numTracks = document.createElement('td');
-      numTracks.innerHTML = playlist.number_tracks;
+        tableRow.appendChild(playlistName);
+        tableRow.appendChild(numTracks);
 
-      tableRow.appendChild(playlistName);
-      tableRow.appendChild(numTracks);
-
-      table.appendChild(tableRow);
-    }
-  });
+        table.appendChild(tableRow);
+      }
+    });
 }
 
 /* Tracks code */
@@ -109,13 +88,14 @@ function loadTracks(index) {
   // Set loading text
   playlistDescArea.innerHTML = 'Loading...';
 
-  // Get all tracks from the specified playlist
-  fetch(`http://localhost:3001/music/tracks?userToken=${user.token}&playlistId=${playlists[index].id}`)
-  .then(response => {
-    return response.text();
-  })
-  .then(response => {
-    let data = JSON.parse(response);
+  getTracks(playlists[index].id)
+  .then(result => {
+    if(!result.success) {
+      window.location.replace('/login');
+      return;
+    }
+
+    tracks = result.tracks;
 
     // Set playlist name and description
     playlistNameArea.innerHTML = playlists[index].name;
@@ -126,26 +106,6 @@ function loadTracks(index) {
 
     // Enable creation button
     createButton.disabled = false;
-
-    // Clear current track list
-    tracks = [];
-
-    // Save each track with wanted data
-    for(const element of data) {
-      const el = element.track;
-
-      // Create track object
-      let track = new Track(
-        el.name,
-        el.artists,
-        el.album.name,
-        el.album.images[2].url,
-        el.preview_url
-      );
-
-      // Save track object to master list
-      tracks.push(track);
-    }
 
     // Create track nodes
     let trackListArea = document.getElementById('trackList');
@@ -161,8 +121,9 @@ function loadTracks(index) {
       // Add to list of all tracks
       trackListArea.appendChild(trackCard);
     }
-  })
+  });
 }
+
 function createCard(track) {
   // Create card div
   let card = document.createElement('div');
@@ -285,6 +246,7 @@ function createSheets() {
   const currentPlaylist = playlists[playlist];
 
   let params = new URLSearchParams();
+  console.log(currentPlaylist);
   params.append('name', currentPlaylist.name);
   params.append('id', currentPlaylist.id);
 
@@ -292,7 +254,7 @@ function createSheets() {
 }
 
 function logout() {
-  localStorage.removeItem('userToken');
+  localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('tokenExpiry');
   window.location.href = '/';

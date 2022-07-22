@@ -39,32 +39,146 @@ function setMode(mode) {
   document.documentElement.className = classname;
 }
 
-function validateUser() {
-  // Get (allegedly) saved token
-  let userToken = localStorage.getItem('userToken');
-  user = new User(userToken);
+function createUser(accessToken, tokenExpiry, refreshToken) {
+  user = new User(accessToken);
+  user.expiry = tokenExpiry;
+  // TODO - Implement refresh token procedure with backend
+}
 
-  // Check if user has token
-  if(user.token === null) {
-    window.location.replace('/login');
-    return;
+async function validateUser() {
+  // Check if we already have user loaded
+  if(user === undefined || user.token === null) {
+    // If not, check if we have user saved
+    if(localStorage.getItem('accessToken') !== null) {
+      // If we do, get all user data and create new user
+      const accessToken = localStorage.getItem('accessToken');
+      const tokenExpiry = parseInt(localStorage.getItem('tokenExpiry'));
+      const refreshToken = localStorage.getItem('refreshToken');
+
+      createUser(accessToken, tokenExpiry, refreshToken);
+    } else {
+      // If not, user is not valid
+      return false;
+    }
   }
 
-  // If user has token, check for expiry time
-  // const expiryTime = Number(localStorage.getItem('tokenExpiry'));
+  // Check if we already know token is expired
   const expiryTime = parseInt(localStorage.getItem('tokenExpiry'));
 
   // No need to check expiry time if < 0; demo account
   if(expiryTime < 0) {
-    return;
+    return true;
   }
   
   // If no expiry is present or token is expired, send user to login page
   // Otherwise, let them continue
   const currentTime = Date.now();
   if(expiryTime === null || isNaN(expiryTime) || currentTime > expiryTime) {
-    window.location.replace('/login');
-  } else {
-    user.expiry = expiryTime;
+    return false;
+  }
+
+  // Fetch validation from backend
+  let data = await fetch(`https://candle-cobra.herokuapp.com/auth/validate?accessToken=${user.token}`);
+
+  // Return if user's access token is valid
+  return data.status === 200;
+}
+
+async function getUser() {
+  const promise = await fetch(`https://candle-cobra.herokuapp.com/music/me?accessToken=${user.token}`);
+  if(promise.status !== 200) {
+    return { success: false };
+  }
+  const promise2 = await promise.text();
+  const data = JSON.parse(promise2);
+
+  // `user` is a global variable to be used throughout
+  user["name"] = data.display_name;
+  user["href"] = data.href;
+  user["id"] = data.id;
+
+  return { success: true };
+}
+
+async function getPlaylists() {
+  // Check if we have playlists cached
+  if(user.playlists) {
+    return user.playlists;
+  }
+
+  const response = await fetch(`https://candle-cobra.herokuapp.com/music/playlists?accessToken=${user.token}`);
+  // First response contains status of fetch to Spotify
+  if(response.status !== 200) {
+    return { success: false };
+  }
+
+  // Get text from original response
+  const response_1 = await response.text();
+
+  let data = JSON.parse(response_1);
+
+  let playlists = [];
+
+  // Load each playlist
+  for (const element of data) {
+    // Only add playlist that have >= 25 songs
+    if (element.tracks.total < 25) {
+      continue;
+    }
+
+    let playlist = new Playlist(
+      element.id,
+      element.name,
+      element.description,
+      element.tracks.total
+    );
+
+    playlists.push(playlist);
+  }
+
+  // Cache playlists for later use
+  user["playlists"] = playlists;
+
+  return {
+    success: true,
+    playlists: playlists
+  };
+}
+
+/* Tracks code */
+async function getTracks(playlistId) {
+  // Get all tracks from the specified playlist
+  const response_1 = await fetch(`https://candle-cobra.herokuapp.com/music/tracks?accessToken=${user.token}&playlistId=${playlistId}`);
+  if(response_1.status !== 200) {
+    return false;
+  }
+  const response_2 = await response_1.text();
+  const data = JSON.parse(response_2);
+
+  let tracks = [];
+
+  // Save each track with wanted data
+  for(const element of data) {
+    // Some tracks return null??
+    if(element.track === null) continue;
+
+    const el = element.track;
+
+    // Create track object
+    let track = new Track(
+      el.name,
+      el.artists,
+      el.album.name,
+      el.album.images[2].url,
+      el.preview_url
+    );
+
+    // Save track object to master list
+    tracks.push(track);
+  }
+
+  return {
+    success: true,
+    tracks: tracks
   }
 }

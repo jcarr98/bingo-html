@@ -4,6 +4,16 @@ let playlistName, playlistId;
 // We don't need to use the Track class because we are only storing names
 let tracks = [];
 
+function load() {
+  loadSettings();
+  let valid = validateUser(); 
+  if(valid) {
+    loadTracks();
+  } else {
+    window.location.replace('/login');
+  }
+}
+
 function loadTracks() {
   // Get playlist ID from URL parameters
   const params = new URLSearchParams(location.search);
@@ -14,20 +24,16 @@ function loadTracks() {
   let playlistNameArea = document.getElementById('playlistName');
   playlistNameArea.value = playlistName;
 
-  // Get playlist tracks from Spotify
-  fetch(`http://localhost:3001/music/tracks?userToken=${user.token}&playlistId=${playlistId}`)
-  .then(response => {
-    return response.text();
-  })
-  .then(response => {
-    const data = JSON.parse(response);
+  getTracks(playlistId)
+  .then(result => {
+    if(!result.success) {
+      window.location.replace('/login');
+      return;
+    }
 
-    // TODO - SOMETIMES RETURNS NULL TRACK
-    for(const track of data) {
-      // Some tracks return null
-      if(track.track === null) { continue; }
-      // Add track name to list of tracks
-      tracks.push(track.track.name);
+    // Pull only names from tracks
+    for(const track of result.tracks) {
+      tracks.push(track.name);
     }
 
     // Update facts for user
@@ -78,7 +84,20 @@ function factorial(n) {
   return factorialHelper(n);
 }
 
+function go() {
+  // Show loading modal
+  let modal = document.getElementById('loadingModal');
+  modal.style.display = 'block';
+
+  // Generate tables and gather all relevant information
+  setTimeout(generate, 500);  // Timeout allows modal time to show before generate slows down page
+}
+
 function generate() {
+  // Show loading modal
+  let modal = document.getElementById('loadingModal');
+  modal.style.display = 'block';
+
   // Collect playlist title
   let title = document.getElementById('playlistName').value;
   if(title.split(' ').join('').length < 1) {
@@ -110,7 +129,22 @@ function generate() {
     return;
   }
 
-  createPDF(title, tables);
+  // Get company name
+  let company = document.getElementById('companyName').value;
+  if(company.split(' ').join('').length < 1) {
+    company = null;
+  }
+
+  // Get freespace image and create PDF
+  if(freespace.files.length > 0) {
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      createPDF(title, company, e.target.result, tables);
+    };
+    reader.readAsDataURL(freespace.files[0]);
+  } else {
+    createPDF(title, company, null, tables);
+  }
 }
 
 /* This is bad, but does the job */
@@ -196,13 +230,19 @@ const generateTables = (arr, k) => {
   return results;
 }
 
-function createPDF(title, tables) {
+function createPDF(title, company, freespace, tables) {
   const pdf = new jspdf.jsPDF();
 
     const pageWidth = pdf.internal.pageSize.getWidth();
 
     // For each bingo sheet, create a new page in the pdf
     for(let i = 0; i < tables.length; i++) {
+      // If company logo is provided, add to PDF
+      if(company !== null) {
+        pdf.setFontSize(10);
+        pdf.text(company, 10, 10);
+      }
+
       pdf.setFontSize(32);
       pdf.text(title, pageWidth/2, 35, 'center');
       pdf.autoTable({
@@ -212,7 +252,7 @@ function createPDF(title, tables) {
           minCellHeight: 5,
           textColor: 'black',
           fontSize: 22,
-          fontStyle: "bold"
+          fontStyle: 'bold'
         },
         styles: {
           cellWidth: pageWidth/5-5,
@@ -230,10 +270,16 @@ function createPDF(title, tables) {
         body: tables[i],
         didDrawCell: function(data) {
           if(data.column.index === 2 && data.row.index === 2) {
+            let dim = data.cell.height - data.cell.padding('vertical');
             let textPos = data.cell.getTextPos();
-            pdf.setFont(undefined, 'bold');
-            pdf.text(textPos.x-9, textPos.y+1, 'Free Space');
-            pdf.setFont(undefined, 'normal');
+            // Free space image
+            if(freespace !== null) {
+              pdf.addImage(freespace, 'png', textPos.x-17, textPos.y-17, dim, dim);
+            } else {
+              pdf.setFont(undefined, 'bold');
+              pdf.text(textPos.x-9, textPos.y+1, 'Free Space');
+              pdf.setFont(undefined, 'normal');
+            }
           }
         }
       });
@@ -243,5 +289,6 @@ function createPDF(title, tables) {
       }
     }
 
-    pdf.save('bingosheets.pdf');
+    pdf.save(`${title} Bingo Sheets.pdf`);
+    window.location.href = '/';
 }

@@ -19,32 +19,40 @@
   </head>
   <body onload="loadSettings(); validateUser(); loadTracks();">
     <!-- Banner -->
-    <div class="box box-full box-vertical">
+    <nav class="box box-full box-vertical">
       <div class="banner">
         <div class="box box-small" style="padding-left: 2em;">
-          <h4><a href="/">Home</a></h4>
+          <h4>
+            <a href="/"><i class="fa-solid fa-house fa-xl"></i></a>
+          </h4>
         </div>
         <div class="box box-vertical">
           <div class="banner-title">Bingo Creator</div>
           <div class="banner-subtitle">Jeffrey Carr</div>
         </div>
         <div class="box box-small" style="padding-right: 2em;">
-          <h4>Apps</h4>
+          <a href="#">
+            <div class="box box-vertical">
+                <i class="fa-solid fa-cubes-stacked"></i>
+                <span>Apps</span>
+            </div>
+          </a>
         </div>  
       </div>
 
       <div class="box box-small" style="background: var(--main);">
         <button onclick="switchMode()" class="btn btn-small btn-plain" id="modeSwitch"></button>
       </div>
-    </div>
+    </nav>
 
     <h1>Create Bingo Sheets</h1>
 
     <!-- Description of services -->
     <div class="box">
       <p>
-        Here you can edit the sheet name, song names, add a free space image, a company logo,
-        and a company name.
+        Here you can edit the sheet name, song names, and add a free space image or company name.
+        Please keep in mind that all sheet creation takes place on your browser, so the more sheets
+        you need to make the longer it will take depending on your computer.
       </p>
       <p>
         Total songs: <span id="totalTracks" style="font-weight: bold;">?</span>
@@ -67,13 +75,28 @@
         <td class="table-clear-input"><input type="number" min="1" value="1" class="input input-long" name="numSheets" id="numSheets" /></td>
       </tr>
       <tr>
-        <td class="table-clear-label">Free Space Logo:</td>
+        <td class="table-clear-label">
+          <div class="box box-vertical box-nocenter">
+            <span>Company Name:</span>
+            <span style="font-size: 0.8em;">(Optional)</span>
+          </div>
+        </td>
+        <td class="table-clear-input">
+          <input class="input input-long" type="text" name="companyName" id="companyName" />
+        </td>
+      </tr>
+      <tr>
+        <td class="table-clear-label">
+          <div class="box box-vertical box-nocenter">
+            <span>Free Space Logo:</span>
+            <span style="font-size: 0.8em;">(Optional)</span>
+          </div>
+        </td>
         <td class="table-clear-input">
           <div class="box box-vertical box-nocenter">
-            <input type="file" name="freespace" id="freespace" accept="image/png, image/jpeg, image/jpg, image/heic" disabled />
+            <input type="file" name="freespace" id="freespace" accept="image/png, image/jpeg, image/heic" />
             <div>
-              <span style="font-size: 0.7em; text-decoration: line-through;">Accepts PNG, JPEG, and HEIC</span>
-              <span style="font-size: 0.7em;">Not implemented</span>
+              <span style="font-size: 0.7em;">Accepts PNG, JPEG, and HEIC</span>
             </div>
           </div>
         </td>
@@ -88,10 +111,16 @@
 
     <div class="box box-large">
       <div class="box box-small">
-        <button onclick="generate();" class="btn">Create Sheets</button>
+        <button onclick="go();" class="btn">Download Sheets</button>
       </div>
       <div class="box box-small">
         <button onclick="window.location.href = '/';" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="loadingModal">
+      <div class="overlay-content box box-full">
+        <h1>Creating sheets...</h1>
       </div>
     </div>
     
