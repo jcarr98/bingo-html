@@ -79,6 +79,7 @@ async function validateUser() {
 
   // Fetch validation from backend
   let data = await fetch(`https://candle-cobra.herokuapp.com/auth/validate?accessToken=${user.token}`);
+  // let data = await fetch(`http://localhost:3001/auth/validate?accessToken=${user.token}`);
 
   // Return if user's access token is valid
   return data.status === 200;
@@ -86,6 +87,7 @@ async function validateUser() {
 
 async function getUser() {
   const promise = await fetch(`https://candle-cobra.herokuapp.com/music/me?accessToken=${user.token}`);
+  // const promise = await fetch(`http://localhost:3001/music/me?accessToken=${user.token}`);
   if(promise.status !== 200) {
     return { success: false };
   }
@@ -107,6 +109,7 @@ async function getPlaylists() {
   }
 
   const response = await fetch(`https://candle-cobra.herokuapp.com/music/playlists?accessToken=${user.token}`);
+  // const response = await fetch(`http://localhost:3001/music/playlists?accessToken=${user.token}`);
   // First response contains status of fetch to Spotify
   if(response.status !== 200) {
     return { success: false };
@@ -149,6 +152,7 @@ async function getPlaylists() {
 async function getTracks(playlistId) {
   // Get all tracks from the specified playlist
   const response_1 = await fetch(`https://candle-cobra.herokuapp.com/music/tracks?accessToken=${user.token}&playlistId=${playlistId}`);
+  // const response_1 = await fetch(`http://localhost:3001/music/tracks?accessToken=${user.token}&playlistId=${playlistId}`);
   if(response_1.status !== 200) {
     return false;
   }

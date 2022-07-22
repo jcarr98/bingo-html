@@ -5,6 +5,7 @@ function getaccessToken() {
   let state = params.get('state');
 
   fetch(`https://candle-cobra.herokuapp.com/auth/token?code=${code}&state=${state}`)
+  // fetch(`http://localhost:3001/auth/token?code=${code}&state=${state}`)
   .then(response => {
     return response.text();
   })
