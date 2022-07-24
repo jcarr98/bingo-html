@@ -1,7 +1,7 @@
 function login() {
   console.log('Fetching login');
-  fetch('https://candle-cobra.herokuapp.com/auth/login')
   // fetch('http://localhost:3001/auth/login')
+  fetch('https://bingo-logs.herokuapp.com/auth/login')
   .then(response => {
     return response.text();
   })
