@@ -187,3 +187,21 @@ async function getTracks(playlistId) {
     tracks: tracks
   }
 }
+
+function toggleDropdown() {
+  let dropdown = document.getElementById('apps-dropdown');
+  const children = dropdown.children;
+  const display = dropdown.style.display;
+  
+  // Add or remove animation from children;
+  for(let i = 0; i < children.length; i++) {
+    let a = children[i];
+    a.style.animationName = 'fadein';
+    a.style.animationDuration = '1s';
+    a.style.animationDelay = `${i/5.5}s`;
+    a.style.animationFillMode = 'forwards';
+  }
+
+  // Change visibility
+  dropdown.style.display = display === 'block' ? 'none' : 'block';
+}
