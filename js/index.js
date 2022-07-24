@@ -12,6 +12,14 @@ let sampleAudio;
 function load() {
   // Load saved prefernce settings
   loadSettings();
+  // Setup dropdown listeners
+  window.addEventListener('click', function(e) {
+    const appsDropdownContainer = document.getElementById('apps-dropdown-container');
+    const appsDropdown = document.getElementById('apps-dropdown');
+    if(!appsDropdownContainer.contains(e.target)) {
+      appsDropdown.style.display = 'none';
+    }
+  });
   // Validate user token
   validateUser().then(valid => {
     if(valid) {
@@ -251,6 +259,24 @@ function createSheets() {
   params.append('id', currentPlaylist.id);
 
   window.location.href = `/create?${params.toString()}`;
+}
+
+function toggleDropdown() {
+  let dropdown = document.getElementById('apps-dropdown');
+  const children = dropdown.children;
+  const display = dropdown.style.display;
+  
+  // Add or remove animation from children;
+  for(let i = 0; i < children.length; i++) {
+    let a = children[i];
+    a.style.animationName = 'fadein';
+    a.style.animationDuration = '1s';
+    a.style.animationDelay = `${i/5.5}s`;
+    a.style.animationFillMode = 'forwards';
+  }
+
+  // Change visibility
+  dropdown.style.display = display === 'block' ? 'none' : 'block';
 }
 
 function logout() {

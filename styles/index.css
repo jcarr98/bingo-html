@@ -33,3 +33,6 @@ p {
 a {
   color: var(--main);
 }
+a:hover {
+  cursor: pointer;
+}
