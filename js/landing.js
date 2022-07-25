@@ -6,7 +6,6 @@ function getaccessToken() {
 
   let accessToken;
 
-  // fetch(`http://localhost:3001/auth/token?code=${code}&state=${state}`)
   fetch(`https://bingo-logs.herokuapp.com/auth/token?code=${code}&state=${state}`)
   .then(response => {
     return response.text();
@@ -33,7 +32,6 @@ function getaccessToken() {
     return data.access_token;
   })
   .then(response => {
-    // return fetch(`http://localhost:3001/log/login?accessToken=${response}`);
     return fetch(`https://bingo-logs.herokuapp.com/log/login?accessToken=${response}`);
   })
   .finally(() => {

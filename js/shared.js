@@ -79,7 +79,6 @@ async function validateUser(action=null) {
 
   // Fetch validation from backend
   const fetchStr = action == null ? `https://bingo-logs.herokuapp.com/auth/validate?accessToken=${user.token}` : `https://bingo-logs.herokuapp.com/auth/validate?accessToken=${user.token}&action=${action}`;
-  // const fetchStr = action == null ? `http://localhost:3001/auth/validate?accessToken=${user.token}` : `http://localhost:3001/auth/validate?accessToken=${user.token}&action=${action}`;
   let data = await fetch(fetchStr);
 
   // Return if user's access token is valid
@@ -88,7 +87,6 @@ async function validateUser(action=null) {
 
 async function getUser() {
   const promise = await fetch(`https://bingo-logs.herokuapp.com/music/me?accessToken=${user.token}`);
-  // const promise = await fetch(`http://localhost:3001/music/me?accessToken=${user.token}`);
   if(promise.status !== 200) {
     return { success: false };
   }
@@ -110,7 +108,6 @@ async function getPlaylists() {
   }
 
   const response = await fetch(`https://bingo-logs.herokuapp.com/music/playlists?accessToken=${user.token}`);
-  // const response = await fetch(`http://localhost:3001/music/playlists?accessToken=${user.token}`);
   // First response contains status of fetch to Spotify
   if(response.status !== 200) {
     return { success: false };
@@ -153,7 +150,6 @@ async function getPlaylists() {
 async function getTracks(playlistId) {
   // Get all tracks from the specified playlist
   const response_1 = await fetch(`https://bingo-logs.herokuapp.com/music/tracks?accessToken=${user.token}&playlistId=${playlistId}`);
-  // const response_1 = await fetch(`http://localhost:3001/music/tracks?accessToken=${user.token}&playlistId=${playlistId}`);
   if(response_1.status !== 200) {
     return false;
   }

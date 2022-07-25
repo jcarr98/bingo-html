@@ -293,5 +293,4 @@
 }
 .dropdown-content a:hover {
   background-color: #ddd;
-  border: 1px solid var(--main);
 }

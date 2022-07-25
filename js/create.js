@@ -90,7 +90,6 @@ function go() {
   modal.style.display = 'block';
 
   // Log creation with backend
-  // fetch(`http://localhost:3001/log/created?accessToken=${user.token}`);
   fetch(`https://bingo-logs.herokuapp.com/log/created?accessToken=${user.token}`);
 
   // Generate tables and gather all relevant information
