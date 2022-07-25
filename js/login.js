@@ -9,7 +9,7 @@ function login() {
     const data = JSON.parse(response);
     const redirectData = JSON.parse(data.redirectPackage);
 
-    window.location.replace(`${data.url}?response_type=${redirectData.response_type}&client_id=${redirectData.client_id}&scope=${redirectData.scope}&redirect_uri=${redirectData.redirect_uri}&state=${redirectData.state}`);
+    window.location.replace(`${data.url}?response_type=${redirectData.response_type}&client_id=${redirectData.client_id}&scope=${redirectData.scope}&redirect_uri=https://bingo-html.pages.dev/landing&state=${redirectData.state}`);
   })
   .catch(err => {
     console.log(err);
