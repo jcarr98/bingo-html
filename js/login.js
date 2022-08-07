@@ -1,4 +1,8 @@
 function login() {
+  // Show loading overlay
+  const modal = document.getElementById('loadingModal');
+  modal.style.display = 'block';
+
   console.log('Fetching login');
   fetch('https://bingo-logs.herokuapp.com/auth/login')
   .then(response => {
