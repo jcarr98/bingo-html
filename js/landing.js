@@ -6,7 +6,7 @@ function getaccessToken() {
 
   let accessToken;
 
-  fetch(`https://bingo-backend.onrender.com/auth/token?code=${code}&state=${state}`)
+  fetch(`https://bingo-generator-backend-vai2syswsq-ue.a.run.app/auth/token?code=${code}&state=${state}`)
   .then(response => {
     return response.text();
   })
@@ -32,7 +32,7 @@ function getaccessToken() {
     return data.access_token;
   })
   .then(response => {
-    return fetch(`https://bingo-backend.onrender.com/log/login?accessToken=${response}`);
+    return fetch(`https://bingo-generator-backend-vai2syswsq-ue.a.run.app/log/login?accessToken=${response}`);
   })
   .finally(() => {
     window.location.replace('/');

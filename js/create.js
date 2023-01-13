@@ -90,7 +90,7 @@ function go() {
   modal.style.display = 'block';
 
   // Log creation with backend
-  fetch(`https://bingo-backend.onrender.com/log/created?accessToken=${user.token}`);
+  fetch(`https://bingo-generator-backend-vai2syswsq-ue.a.run.app/log/created?accessToken=${user.token}`);
 
   // Generate tables and gather all relevant information
   setTimeout(generate, 500);  // Timeout allows modal time to show before generate slows down page

@@ -4,7 +4,7 @@ function login() {
   modal.style.display = 'block';
 
   console.log('Fetching login');
-  fetch('https://bingo-backend.onrender.com/auth/login')
+  fetch('https://bingo-generator-backend-vai2syswsq-ue.a.run.app/auth/login')
   .then(response => {
     return response.text();
   })
